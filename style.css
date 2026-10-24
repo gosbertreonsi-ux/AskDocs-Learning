@@ -1,0 +1,2 @@
+.chat { max-width: 600px; margin: 40px auto; display: grid; gap: 12px; }
+button { padding: 10px; border-radius: 8px; }
