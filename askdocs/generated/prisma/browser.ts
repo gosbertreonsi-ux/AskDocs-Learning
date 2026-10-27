@@ -23,6 +23,11 @@ export * from './enums';
  */
 export type Conversation = Prisma.ConversationModel
 /**
+ * Model Document
+ * 
+ */
+export type Document = Prisma.DocumentModel
+/**
  * Model Message
  * 
  */
