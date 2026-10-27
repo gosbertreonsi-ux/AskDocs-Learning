@@ -10,7 +10,6 @@ import {
   listDocuments,
 } from "@/lib/server/repositories/document.repository";
 
-export const runtime = "nodejs";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const COOKIE_NAME = "askdocs_session";

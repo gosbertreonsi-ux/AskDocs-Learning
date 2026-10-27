@@ -28,5 +28,8 @@
     "prisma": "^7.10.1",
     "typescript": "^5"
   },
-  "type": "module"
+  "type": "module",
+  "optionalDependencies": {
+    "@napi-rs/canvas-win32-x64-msvc": "^0.1.80"
+  }
 }
