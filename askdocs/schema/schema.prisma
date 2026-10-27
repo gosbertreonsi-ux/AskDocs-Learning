@@ -25,12 +25,8 @@ model Message {
   text           String
   createdAt      DateTime     @default(now())
 
-  conversationId String
-  conversation   Conversation @relation(
-    fields: [conversationId],
-    references: [id],
-    onDelete: Cascade
-  )
+conversationId String
+conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, id])
 }
