@@ -10,20 +10,31 @@ export default function Chat() {
   ]);
   const [input, setInput] = useState("");
 
-  function send(e: React.FormEvent) {
+  // TODO(M1): load history with getMessages() and persist sends with sendMessage().
+  // See docs/milestones/01-chat-persistence.md.
+  async function send(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim();
     if (!text) return;
 
+    // Optimistically add user message to UI
     setMessages(prev => [...prev, { id: Date.now(), role: "user", text }]);
     setInput("");
 
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { id: Date.now() + 1, role: "ai", text: "You asked: " + text },
-      ]);
-    }, 1000);
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const saved: Message = await res.json();
+      console.log("Server replied:", saved);
+      
+      // Append the AI's actual response to the chat
+      setMessages(prev => [...prev, saved]);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   }
 
   return (
@@ -45,16 +56,3 @@ export default function Chat() {
     </div>
   );
 }
-
-/* useEffect runs code after the component appears, for things like fetching data:
-import { useEffect, useState } from "react";
-
-const [docs, setDocs] = useState<string[]>([]);
-
-useEffect(() => {
-  fetch("/api/documents")
-    .then(r => r.json())
-    .then(setDocs);
-}, []);          // [] means "run once, when the component first appears"
-
-*/
