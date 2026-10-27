@@ -7,7 +7,6 @@ import {
   processQuestion,
 } from "@/lib/server/services/message.service";
 
-export const runtime = "nodejs";
 
 const COOKIE_NAME = "askdocs_session";
 
