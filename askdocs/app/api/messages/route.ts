@@ -1,23 +1,55 @@
 
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 import {
-  getWelcomeMessages,
-  createDemoReply,
+  getConversationHistory,
+  processQuestion,
 } from "@/lib/server/services/message.service";
 
-// GET /api/messages
-export async function GET() {
-  const messages = getWelcomeMessages();
+export const runtime = "nodejs";
 
-  return NextResponse.json(messages);
+const COOKIE_NAME = "askdocs_session";
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+
+async function getConversationId() {
+  const cookieStore = await cookies();
+  const value = cookieStore.get(COOKIE_NAME)?.value;
+
+  return value && UUID_PATTERN.test(value)
+    ? value
+    : null;
 }
 
-// POST /api/messages
+export async function GET() {
+  const conversationId = await getConversationId();
+
+  if (!conversationId) {
+    return NextResponse.json([]);
+  }
+
+  try {
+    const messages =
+      await getConversationHistory(conversationId);
+
+    return NextResponse.json(messages, {
+      headers: { "Cache-Control": "private, no-store" },
+    });
+  } catch (error) {
+    console.error("Load messages failed:", error);
+
+    return NextResponse.json(
+      { error: "Could not load messages" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   let body: unknown;
 
-  // Step 1: Read the incoming JSON.
   try {
     body = await request.json();
   } catch {
@@ -27,7 +59,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 2: Extract the incoming question.
   const text =
     typeof body === "object" &&
     body !== null &&
@@ -35,17 +66,47 @@ export async function POST(request: Request) {
       ? body.text
       : undefined;
 
-  // Step 3: Delegate processing to the service.
-  const result = createDemoReply(text);
+  const existingId = await getConversationId();
+  const conversationId =
+    existingId ?? crypto.randomUUID();
 
-  // Step 4: Convert service errors to HTTP errors.
-  if (!result.ok) {
+  try {
+    const result = await processQuestion(
+      conversationId,
+      text
+    );
+
+    if (!result.ok) {
+      return NextResponse.json(
+        { error: result.error },
+        { status: 400 }
+      );
+    }
+
+    const response = NextResponse.json(
+      result.message,
+      { status: 201 }
+    );
+
+    response.cookies.set(
+      COOKIE_NAME,
+      conversationId,
+      {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Save message failed:", error);
+
     return NextResponse.json(
-      { error: result.error },
-      { status: 400 }
+      { error: "Could not save message" },
+      { status: 500 }
     );
   }
-
-  // Step 5: Return a successful response.
-  return NextResponse.json(result.message);
 }
