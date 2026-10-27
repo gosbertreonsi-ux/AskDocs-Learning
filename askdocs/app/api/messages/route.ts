@@ -1,20 +1,23 @@
 
 import { NextResponse } from "next/server";
-import type { Message } from "@/lib/types";
 
+import {
+  getWelcomeMessages,
+  createDemoReply,
+} from "@/lib/server/services/message.service";
+
+// GET /api/messages
 export async function GET() {
-  const welcome: Message = {
-    id: 1,
-    role: "ai",
-    text: "Hello from the AskDocs server!",
-  };
+  const messages = getWelcomeMessages();
 
-  return NextResponse.json([welcome]);
+  return NextResponse.json(messages);
 }
 
+// POST /api/messages
 export async function POST(request: Request) {
   let body: unknown;
 
+  // Step 1: Read the incoming JSON.
   try {
     body = await request.json();
   } catch {
@@ -24,28 +27,25 @@ export async function POST(request: Request) {
     );
   }
 
+  // Step 2: Extract the incoming question.
   const text =
     typeof body === "object" &&
     body !== null &&
-    "text" in body &&
-    typeof body.text === "string"
-      ? body.text.trim()
-      : "";
+    "text" in body
+      ? body.text
+      : undefined;
 
-  if (!text) {
+  // Step 3: Delegate processing to the service.
+  const result = createDemoReply(text);
+
+  // Step 4: Convert service errors to HTTP errors.
+  if (!result.ok) {
     return NextResponse.json(
-      { error: "text is required" },
+      { error: result.error },
       { status: 400 }
     );
   }
 
-  // Simulated answer from the server.
-  // Real document retrieval and AI come later.
-  const reply: Message = {
-    id: Date.now(),
-    role: "ai",
-    text: `You asked: ${text}. Document search is not connected yet.`,
-  };
-
-  return NextResponse.json(reply);
+  // Step 5: Return a successful response.
+  return NextResponse.json(result.message);
 }

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment files (examples are committed)
+.env
+.env.*
+!.env.example
+
+# Generated code
+src/generated/
+prisma/migrations/dev.db*
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db

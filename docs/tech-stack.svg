@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="596" viewBox="0 0 940 596" role="img" aria-labelledby="t d">
+<title id="t">Software engineer tech stack: full-stack and AI web applications</title>
+<desc id="d">Twenty-seven technologies in six steps: foundations, frontend, backend and data, AI layer, security, and DevOps, connected by an animated flow line.</desc>
+<style>
+text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+.title{font-size:24px;font-weight:700;fill:#e6edf3}
+.sub{font-size:13px;fill:#8b949e}
+.rowt{font-size:15px;font-weight:600;fill:#e6edf3}
+.rows{font-size:12px;fill:#8b949e}
+.pt{font-size:13px;font-weight:500;fill:#e6edf3}
+.num{font-size:13px;font-weight:700;fill:#0d1117;text-anchor:middle}
+.foot{font-size:12px;fill:#8b949e;text-anchor:middle}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{stroke-opacity:.45}50%{stroke-opacity:1}}
+@keyframes glow{0%{opacity:0}6%{opacity:.2}18%{opacity:0}100%{opacity:0}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes sweep{0%{transform:translateX(0)}100%{transform:translateX(560px)}}
+@keyframes nodepulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.pill{animation:rise .6s ease-out both}
+.pillbox{animation:pulse 4s ease-in-out infinite}
+.rowglow{animation:glow 9s linear infinite;opacity:0}
+.rail{stroke-dasharray:6 6;animation:flow 1.2s linear infinite}
+.node{transform-box:fill-box;transform-origin:center;animation:nodepulse 9s ease-in-out infinite}
+.bar{animation:sweep 3.2s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.pill,.pillbox,.rowglow,.rail,.node,.bar{animation:none}.rowglow{opacity:.08}}
+</style>
+<rect x="0.5" y="0.5" width="939" height="595" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="title" x="40" y="46">Software Engineer</text>
+<text class="sub" x="40" y="68">Full-Stack and AI web applications: 27 technologies, one flow from the browser to production</text>
+<clipPath id="barclip"><rect x="40" y="80" width="820" height="3" rx="1.5"/></clipPath>
+<g clip-path="url(#barclip)"><rect x="40" y="80" width="820" height="3" fill="#30363d"/><rect class="bar" x="40" y="80" width="260" height="3" fill="#58a6ff"/></g>
+<line x1="56" y1="138.0" x2="56" y2="498.0" stroke="#30363d" stroke-width="2"/>
+<line class="rail" x1="56" y1="138.0" x2="56" y2="498.0" stroke="#58a6ff" stroke-width="2" stroke-opacity=".8"/>
+<rect class="rowglow" style="animation-delay:0.0s" x="20" y="106" width="900" height="64" rx="12" fill="#e3b341"/>
+<g class="node" style="animation-delay:0.0s"><circle cx="56" cy="138.0" r="14" fill="#e3b341"/><text class="num" x="56" y="142.5">1</text></g>
+<text class="rowt" x="88" y="136.0">Foundations</text>
+<text class="rows" x="88" y="154.0">Tools and web basics</text>
+<g class="pill" style="animation-delay:0.15s"><rect class="pillbox" style="animation-delay:0.00s" x="236" y="122.0" width="53" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="250" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="262" y="142.5">Git</text></g>
+<g class="pill" style="animation-delay:0.24s"><rect class="pillbox" style="animation-delay:0.37s" x="297" y="122.0" width="69" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="311" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="323" y="142.5">Linux</text></g>
+<g class="pill" style="animation-delay:0.33s"><rect class="pillbox" style="animation-delay:0.74s" x="374" y="122.0" width="78" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="388" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="400" y="142.5">HTML5</text></g>
+<g class="pill" style="animation-delay:0.42s"><rect class="pillbox" style="animation-delay:1.11s" x="460" y="122.0" width="68" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="474" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="486" y="142.5">CSS3</text></g>
+<g class="pill" style="animation-delay:0.51s"><rect class="pillbox" style="animation-delay:1.48s" x="536" y="122.0" width="113" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="550" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="562" y="142.5">Tailwind CSS</text></g>
+<g class="pill" style="animation-delay:0.60s"><rect class="pillbox" style="animation-delay:1.85s" x="657" y="122.0" width="97" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="671" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="683" y="142.5">JavaScript</text></g>
+<g class="pill" style="animation-delay:0.69s"><rect class="pillbox" style="animation-delay:2.22s" x="762" y="122.0" width="100" height="32" rx="16" fill="#161b22" stroke="#e3b341" stroke-width="1.2"/><circle cx="776" cy="138.0" r="4" fill="#e3b341"/><text class="pt" x="788" y="142.5">TypeScript</text></g>
+<rect class="rowglow" style="animation-delay:1.8s" x="20" y="178" width="900" height="64" rx="12" fill="#a371f7"/>
+<g class="node" style="animation-delay:1.8s"><circle cx="56" cy="210.0" r="14" fill="#a371f7"/><text class="num" x="56" y="214.5">2</text></g>
+<text class="rowt" x="88" y="208.0">Frontend</text>
+<text class="rows" x="88" y="226.0">What users touch</text>
+<g class="pill" style="animation-delay:0.78s"><rect class="pillbox" style="animation-delay:2.59s" x="236" y="194.0" width="70" height="32" rx="16" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/><circle cx="250" cy="210.0" r="4" fill="#a371f7"/><text class="pt" x="262" y="214.5">React</text></g>
+<g class="pill" style="animation-delay:0.87s"><rect class="pillbox" style="animation-delay:2.96s" x="314" y="194.0" width="78" height="32" rx="16" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/><circle cx="328" cy="210.0" r="4" fill="#a371f7"/><text class="pt" x="340" y="214.5">Next.js</text></g>
+<g class="pill" style="animation-delay:0.96s"><rect class="pillbox" style="animation-delay:3.33s" x="400" y="194.0" width="85" height="32" rx="16" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/><circle cx="414" cy="210.0" r="4" fill="#a371f7"/><text class="pt" x="426" y="214.5">Three.js</text></g>
+<rect class="rowglow" style="animation-delay:3.6s" x="20" y="250" width="900" height="64" rx="12" fill="#2dd4bf"/>
+<g class="node" style="animation-delay:3.6s"><circle cx="56" cy="282.0" r="14" fill="#2dd4bf"/><text class="num" x="56" y="286.5">3</text></g>
+<text class="rowt" x="88" y="280.0">Backend and data</text>
+<text class="rows" x="88" y="298.0">Server, storage, live</text>
+<g class="pill" style="animation-delay:1.05s"><rect class="pillbox" style="animation-delay:3.70s" x="236" y="266.0" width="82" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="250" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="262" y="286.5">Node.js</text></g>
+<g class="pill" style="animation-delay:1.14s"><rect class="pillbox" style="animation-delay:0.07s" x="326" y="266.0" width="97" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="340" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="352" y="286.5">Express.js</text></g>
+<g class="pill" style="animation-delay:1.23s"><rect class="pillbox" style="animation-delay:0.44s" x="431" y="266.0" width="106" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="445" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="457" y="286.5">PostgreSQL</text></g>
+<g class="pill" style="animation-delay:1.32s"><rect class="pillbox" style="animation-delay:0.81s" x="545" y="266.0" width="78" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="559" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="571" y="286.5">MySQL</text></g>
+<g class="pill" style="animation-delay:1.41s"><rect class="pillbox" style="animation-delay:1.18s" x="631" y="266.0" width="77" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="645" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="657" y="286.5">Prisma</text></g>
+<g class="pill" style="animation-delay:1.50s"><rect class="pillbox" style="animation-delay:1.55s" x="716" y="266.0" width="69" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="730" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="742" y="286.5">Redis</text></g>
+<g class="pill" style="animation-delay:1.59s"><rect class="pillbox" style="animation-delay:1.92s" x="793" y="266.0" width="94" height="32" rx="16" fill="#161b22" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="807" cy="282.0" r="4" fill="#2dd4bf"/><text class="pt" x="819" y="286.5">Socket.IO</text></g>
+<rect class="rowglow" style="animation-delay:5.4s" x="20" y="322" width="900" height="64" rx="12" fill="#f778ba"/>
+<g class="node" style="animation-delay:5.4s"><circle cx="56" cy="354.0" r="14" fill="#f778ba"/><text class="num" x="56" y="358.5">4</text></g>
+<text class="rowt" x="88" y="352.0">AI layer</text>
+<text class="rows" x="88" y="370.0">Search and answers</text>
+<g class="pill" style="animation-delay:1.68s"><rect class="pillbox" style="animation-delay:2.29s" x="236" y="338.0" width="78" height="32" rx="16" fill="#161b22" stroke="#f778ba" stroke-width="1.2"/><circle cx="250" cy="354.0" r="4" fill="#f778ba"/><text class="pt" x="262" y="358.5">Python</text></g>
+<g class="pill" style="animation-delay:1.77s"><rect class="pillbox" style="animation-delay:2.66s" x="322" y="338.0" width="80" height="32" rx="16" fill="#161b22" stroke="#f778ba" stroke-width="1.2"/><circle cx="336" cy="354.0" r="4" fill="#f778ba"/><text class="pt" x="348" y="358.5">FastAPI</text></g>
+<g class="pill" style="animation-delay:1.86s"><rect class="pillbox" style="animation-delay:3.03s" x="410" y="338.0" width="90" height="32" rx="16" fill="#161b22" stroke="#f778ba" stroke-width="1.2"/><circle cx="424" cy="354.0" r="4" fill="#f778ba"/><text class="pt" x="436" y="358.5">pgvector</text></g>
+<g class="pill" style="animation-delay:1.95s"><rect class="pillbox" style="animation-delay:3.40s" x="508" y="338.0" width="79" height="32" rx="16" fill="#161b22" stroke="#f778ba" stroke-width="1.2"/><circle cx="522" cy="354.0" r="4" fill="#f778ba"/><text class="pt" x="534" y="358.5">Ollama</text></g>
+<rect class="rowglow" style="animation-delay:7.2s" x="20" y="394" width="900" height="64" rx="12" fill="#f0883e"/>
+<g class="node" style="animation-delay:7.2s"><circle cx="56" cy="426.0" r="14" fill="#f0883e"/><text class="num" x="56" y="430.5">5</text></g>
+<text class="rowt" x="88" y="424.0">Security</text>
+<text class="rows" x="88" y="442.0">Protect everything</text>
+<g class="pill" style="animation-delay:2.04s"><rect class="pillbox" style="animation-delay:3.77s" x="236" y="410.0" width="81" height="32" rx="16" fill="#161b22" stroke="#f0883e" stroke-width="1.2"/><circle cx="250" cy="426.0" r="4" fill="#f0883e"/><text class="pt" x="262" y="430.5">OWASP</text></g>
+<rect class="rowglow" style="animation-delay:9.0s" x="20" y="466" width="900" height="64" rx="12" fill="#58a6ff"/>
+<g class="node" style="animation-delay:9.0s"><circle cx="56" cy="498.0" r="14" fill="#58a6ff"/><text class="num" x="56" y="502.5">6</text></g>
+<text class="rowt" x="88" y="496.0">DevOps</text>
+<text class="rows" x="88" y="514.0">Ship and watch</text>
+<g class="pill" style="animation-delay:2.13s"><rect class="pillbox" style="animation-delay:0.14s" x="236" y="482.0" width="79" height="32" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="1.2"/><circle cx="250" cy="498.0" r="4" fill="#58a6ff"/><text class="pt" x="262" y="502.5">Docker</text></g>
+<g class="pill" style="animation-delay:2.22s"><rect class="pillbox" style="animation-delay:0.51s" x="323" y="482.0" width="127" height="32" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="1.2"/><circle cx="337" cy="498.0" r="4" fill="#58a6ff"/><text class="pt" x="349" y="502.5">GitHub Actions</text></g>
+<g class="pill" style="animation-delay:2.31s"><rect class="pillbox" style="animation-delay:0.88s" x="458" y="482.0" width="75" height="32" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="1.2"/><circle cx="472" cy="498.0" r="4" fill="#58a6ff"/><text class="pt" x="484" y="502.5">Caddy</text></g>
+<g class="pill" style="animation-delay:2.40s"><rect class="pillbox" style="animation-delay:1.25s" x="541" y="482.0" width="109" height="32" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="1.2"/><circle cx="555" cy="498.0" r="4" fill="#58a6ff"/><text class="pt" x="567" y="502.5">Prometheus</text></g>
+<g class="pill" style="animation-delay:2.49s"><rect class="pillbox" style="animation-delay:1.62s" x="658" y="482.0" width="85" height="32" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="1.2"/><circle cx="672" cy="498.0" r="4" fill="#58a6ff"/><text class="pt" x="684" y="502.5">Grafana</text></g>
+<circle r="6" fill="#ffffff"><animateMotion dur="9s" repeatCount="indefinite" path="M56,138.0 L56,498.0" keyPoints="0;1;1" keyTimes="0;0.9;1" calcMode="linear"/></circle>
+<circle r="12" fill="#58a6ff" fill-opacity=".25"><animateMotion dur="9s" repeatCount="indefinite" path="M56,138.0 L56,498.0" keyPoints="0;1;1" keyTimes="0;0.9;1" calcMode="linear"/></circle>
+<text class="foot" x="470.0" y="574">Browser, server, data, AI, security, then ship it. Each layer builds on the one before.</text>
+</svg>

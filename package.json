@@ -1,0 +1,14 @@
+{
+  "name": "askdocs-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AskDocs learning workspace: Next.js frontend and Express API",
+  "scripts": {
+    "dev:web": "npm --prefix askdocs run dev",
+    "dev:api": "npm --prefix askdocs-api run dev",
+    "db:generate": "npm --prefix askdocs-api run db:generate",
+    "db:migrate": "npm --prefix askdocs-api run db:migrate",
+    "db:studio": "npm --prefix askdocs-api run db:studio",
+    "typecheck": "npm --prefix askdocs-api run typecheck"
+  }
+}
