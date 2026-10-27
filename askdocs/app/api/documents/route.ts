@@ -1,0 +1,149 @@
+
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+
+import { extractPdfText }
+  from "@/lib/server/services/document.service";
+
+import {
+  saveDocument,
+  listDocuments,
+} from "@/lib/server/repositories/document.repository";
+
+export const runtime = "nodejs";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const COOKIE_NAME = "askdocs_session";
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+
+async function getConversationId() {
+  const cookieStore = await cookies();
+  const value = cookieStore.get(COOKIE_NAME)?.value;
+
+  return value && UUID_PATTERN.test(value)
+    ? value
+    : null;
+}
+
+export async function GET() {
+  const conversationId = await getConversationId();
+
+  if (!conversationId) {
+    return NextResponse.json([]);
+  }
+
+  try {
+    const documents = await listDocuments(
+      conversationId
+    );
+
+    return NextResponse.json(documents, {
+      headers: {
+        "Cache-Control": "private, no-store",
+      },
+    });
+  } catch (error) {
+    console.error("Document listing failed:", error);
+
+    return NextResponse.json(
+      { error: "Could not load documents" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  let form: FormData;
+
+  try {
+    form = await request.formData();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid upload request" },
+      { status: 400 }
+    );
+  }
+
+  const file = form.get("file");
+
+  if (!(file instanceof File)) {
+    return NextResponse.json(
+      { error: "Please select a PDF file" },
+      { status: 400 }
+    );
+  }
+
+  if (
+    !file.name.toLowerCase().endsWith(".pdf") ||
+    (file.type && file.type !== "application/pdf")
+  ) {
+    return NextResponse.json(
+      { error: "Only PDF files are supported" },
+      { status: 415 }
+    );
+  }
+
+  if (file.size === 0 || file.size > MAX_FILE_SIZE) {
+    return NextResponse.json(
+      { error: "PDF must be between 1 byte and 5 MB" },
+      { status: 413 }
+    );
+  }
+
+  let text: string;
+
+  try {
+    text = await extractPdfText(file);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "PDF extraction failed",
+      },
+      { status: 422 }
+    );
+  }
+
+  try {
+    const existingId = await getConversationId();
+    const conversationId =
+      existingId ?? crypto.randomUUID();
+
+    const document = await saveDocument({
+      conversationId,
+      name: file.name.slice(0, 180),
+      size: file.size,
+      extractedText: text,
+    });
+
+    const response = NextResponse.json(
+      document,
+      { status: 201 }
+    );
+
+    response.cookies.set(
+      COOKIE_NAME,
+      conversationId,
+      {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Document save failed:", error);
+
+    return NextResponse.json(
+      { error: "Could not save document" },
+      { status: 500 }
+    );
+  }
+}
