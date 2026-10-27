@@ -1,26 +1,25 @@
 
 import type { Message } from "@/lib/types";
 
-// The result can either succeed or fail.
+import {
+  findMessages,
+  saveExchange,
+} from "@/lib/server/repositories/message.repository";
+
 type ReplyResult =
   | { ok: true; message: Message }
   | { ok: false; error: string };
 
-export function getWelcomeMessages(): Message[] {
-  return [
-    {
-      id: 1,
-      role: "ai",
-      text: "Hello from the AskDocs server!",
-    },
-  ];
+export async function getConversationHistory(
+  conversationId: string
+): Promise<Message[]> {
+  return findMessages(conversationId);
 }
 
-export function createDemoReply(
+export async function processQuestion(
+  conversationId: string,
   rawText: unknown
-): ReplyResult {
-
-  // Business rule 1: The question must be text.
+): Promise<ReplyResult> {
   if (typeof rawText !== "string") {
     return {
       ok: false,
@@ -30,7 +29,6 @@ export function createDemoReply(
 
   const text = rawText.trim();
 
-  // Business rule 2: Empty questions are rejected.
   if (!text) {
     return {
       ok: false,
@@ -38,7 +36,6 @@ export function createDemoReply(
     };
   }
 
-  // Business rule 3: Limit question length.
   if (text.length > 2000) {
     return {
       ok: false,
@@ -46,17 +43,19 @@ export function createDemoReply(
     };
   }
 
-  // Simulated answer, not yet a real AI response.
-  const reply: Message = {
-    id: Date.now(),
-    role: "ai",
-    text:
-      `You asked: ${text}. ` +
-      "Document search is not connected yet.",
-  };
+  // AI is still simulated at this stage.
+  const answer =
+    `You asked: ${text}. ` +
+    "Document search is not connected yet.";
+
+  const savedReply = await saveExchange(
+    conversationId,
+    text,
+    answer
+  );
 
   return {
     ok: true,
-    message: reply,
+    message: savedReply,
   };
 }
