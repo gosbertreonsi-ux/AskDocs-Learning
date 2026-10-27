@@ -1,37 +1,63 @@
 
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { Message } from "@/lib/types";
 import MessageBubble from "./MessageBubble";
 
-export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      role: "ai",
-      text: "Hello! Ask me about your documents.",
-    },
-  ]);
+const welcome: Message = {
+  id: 0,
+  role: "ai",
+  text: "Hello! Ask me about your documents.",
+};
 
+export default function Chat() {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadMessages() {
+      try {
+        const response = await fetch("/api/messages", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load history");
+        }
+
+        const data: Message[] = await response.json();
+
+        if (active) {
+          setMessages(data.length ? data : [welcome]);
+        }
+      } catch {
+        if (active) {
+          setError("Could not load conversation history");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadMessages();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function send(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const text = input.trim();
-    if (!text || sending) return;
+    if (!text || sending || loading) return;
 
-    const userMessage: Message = {
-      id: Date.now(),
-      role: "user",
-      text,
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput("");
     setSending(true);
     setError(null);
 
@@ -45,19 +71,29 @@ export default function Chat() {
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Request failed (${response.status})`
-        );
+        throw new Error("Message could not be saved");
       }
 
-      const reply: Message = await response.json();
+      // Fetch authoritative records from the database.
+      const historyResponse = await fetch(
+        "/api/messages",
+        { cache: "no-store" }
+      );
 
-      setMessages(prev => [...prev, reply]);
+      if (!historyResponse.ok) {
+        throw new Error("Could not reload messages");
+      }
+
+      const history: Message[] =
+        await historyResponse.json();
+
+      setMessages(history);
+      setInput("");
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Something went wrong"
+          : "Unexpected error"
       );
     } finally {
       setSending(false);
@@ -67,12 +103,16 @@ export default function Chat() {
   return (
     <div className="chat">
       <div id="messages">
-        {messages.map(m => (
-          <MessageBubble
-            key={m.id}
-            message={m}
-          />
-        ))}
+        {loading ? (
+          <p>Loading messages...</p>
+        ) : (
+          messages.map(message => (
+            <MessageBubble
+              key={message.id}
+              message={message}
+            />
+          ))
+        )}
       </div>
 
       {error && <p role="alert">{error}</p>}
@@ -81,10 +121,14 @@ export default function Chat() {
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
+          disabled={loading || sending}
           placeholder="Ask about your documents..."
         />
 
-        <button type="submit" disabled={sending}>
+        <button
+          type="submit"
+          disabled={loading || sending}
+        >
           {sending ? "Sending..." : "Send"}
         </button>
       </form>
