@@ -10,31 +10,8 @@ import {
   listDocuments,
 } from "@/lib/server/repositories/document.repository";
 
-import { indexDocument } from
-  "@/lib/server/services/indexing.service";
-
-  
-let indexed = false;
-
-try {
-  const chunkCount = await indexDocument(
-    document.id,
-    text
-  );
-
-  indexed = true;
-
-  console.log(
-    `[INDEXING SUCCESS] ${document.name}: ${chunkCount} chunks`
-  );
-} catch (error) {
-  console.error(
-    "[INDEXING FAILED] Document was saved, but indexing failed:",
-    error
-  );
-}
-
-
+import { indexDocument }
+  from "@/lib/server/services/indexing.service";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const COOKIE_NAME = "askdocs_session";
@@ -42,6 +19,7 @@ const COOKIE_NAME = "askdocs_session";
 const UUID_PATTERN =
   /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 
+// Get the conversation identifier from the cookie.
 async function getConversationId() {
   const cookieStore = await cookies();
   const value = cookieStore.get(COOKIE_NAME)?.value;
@@ -51,6 +29,7 @@ async function getConversationId() {
     : null;
 }
 
+// GET: List previously uploaded documents.
 export async function GET() {
   const conversationId = await getConversationId();
 
@@ -78,9 +57,11 @@ export async function GET() {
   }
 }
 
+// POST: Upload, extract, save and index a PDF.
 export async function POST(request: Request) {
   let form: FormData;
 
+  // STEP 1: Read the uploaded file.
   try {
     form = await request.formData();
   } catch {
@@ -99,6 +80,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // STEP 2: Validate the PDF.
   if (
     !file.name.toLowerCase().endsWith(".pdf") ||
     (file.type && file.type !== "application/pdf")
@@ -109,13 +91,17 @@ export async function POST(request: Request) {
     );
   }
 
-  if (file.size === 0 || file.size > MAX_FILE_SIZE) {
+  if (
+    file.size === 0 ||
+    file.size > MAX_FILE_SIZE
+  ) {
     return NextResponse.json(
       { error: "PDF must be between 1 byte and 5 MB" },
       { status: 413 }
     );
   }
 
+  // STEP 3: Extract the text.
   let text: string;
 
   try {
@@ -132,11 +118,14 @@ export async function POST(request: Request) {
     );
   }
 
+  // STEP 4: Save and index the document.
   try {
     const existingId = await getConversationId();
+
     const conversationId =
       existingId ?? crypto.randomUUID();
 
+    // Save the document in PostgreSQL.
     const document = await saveDocument({
       conversationId,
       name: file.name.slice(0, 180),
@@ -144,8 +133,33 @@ export async function POST(request: Request) {
       extractedText: text,
     });
 
+    // STEP 5: Generate and store vector embeddings.
+    let indexed = false;
+
+    try {
+      const chunkCount = await indexDocument(
+        document.id,
+        text
+      );
+
+      indexed = true;
+
+      console.log(
+        `[INDEXING SUCCESS] ${document.name}: ${chunkCount} chunks`
+      );
+    } catch (error) {
+      console.error(
+        "[INDEXING FAILED] Document saved, but indexing failed:",
+        error
+      );
+    }
+
+    // STEP 6: Return the saved document and status.
     const response = NextResponse.json(
-      { ...document, indexed },
+      {
+        ...document,
+        indexed,
+      },
       { status: 201 }
     );
 
