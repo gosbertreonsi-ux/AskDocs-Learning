@@ -1,43 +1,41 @@
 
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
-import { extractPdfText }
-  from "@/lib/server/services/document.service";
+import {
+  getAuthenticatedUser,
+  getUserConversationId,
+  isSameOrigin,
+} from "@/lib/server/auth";
+
+import {
+  extractPdfText,
+} from "@/lib/server/services/document.service";
 
 import {
   saveDocument,
   listDocuments,
 } from "@/lib/server/repositories/document.repository";
 
-import { indexDocument }
-  from "@/lib/server/services/indexing.service";
+import {
+  indexDocument,
+} from "@/lib/server/services/indexing.service";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const COOKIE_NAME = "askdocs_session";
 
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
-
-// Get the conversation identifier from the cookie.
-async function getConversationId() {
-  const cookieStore = await cookies();
-  const value = cookieStore.get(COOKIE_NAME)?.value;
-
-  return value && UUID_PATTERN.test(value)
-    ? value
-    : null;
-}
-
-// GET: List previously uploaded documents.
 export async function GET() {
-  const conversationId = await getConversationId();
+  const user = await getAuthenticatedUser();
 
-  if (!conversationId) {
-    return NextResponse.json([]);
+  if (!user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
   }
 
   try {
+    const conversationId =
+      await getUserConversationId(user.id);
+
     const documents = await listDocuments(
       conversationId
     );
@@ -57,125 +55,102 @@ export async function GET() {
   }
 }
 
-// POST: Upload, extract, save and index a PDF.
 export async function POST(request: Request) {
-  let form: FormData;
-
-  // STEP 1: Read the uploaded file.
-  try {
-    form = await request.formData();
-  } catch {
+  if (!isSameOrigin(request)) {
     return NextResponse.json(
-      { error: "Invalid upload request" },
-      { status: 400 }
+      { error: "Invalid request origin" },
+      { status: 403 }
     );
   }
 
-  const file = form.get("file");
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+
+  const form = await request.formData().catch(() => null);
+  const file = form?.get("file");
 
   if (!(file instanceof File)) {
     return NextResponse.json(
-      { error: "Please select a PDF file" },
+      { error: "Please select a PDF" },
       { status: 400 }
     );
   }
 
-  // STEP 2: Validate the PDF.
   if (
     !file.name.toLowerCase().endsWith(".pdf") ||
     (file.type && file.type !== "application/pdf")
   ) {
     return NextResponse.json(
-      { error: "Only PDF files are supported" },
+      { error: "Only PDFs are supported" },
       { status: 415 }
     );
   }
 
-  if (
-    file.size === 0 ||
-    file.size > MAX_FILE_SIZE
-  ) {
+  if (file.size === 0 || file.size > MAX_FILE_SIZE) {
     return NextResponse.json(
       { error: "PDF must be between 1 byte and 5 MB" },
       { status: 413 }
     );
   }
 
-  // STEP 3: Extract the text.
-  let text: string;
+  let extractedText: string;
 
   try {
-    text = await extractPdfText(file);
+    extractedText = await extractPdfText(file);
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "PDF extraction failed",
+        error: error instanceof Error
+          ? error.message
+          : "PDF extraction failed",
       },
       { status: 422 }
     );
   }
 
-  // STEP 4: Save and index the document.
   try {
-    const existingId = await getConversationId();
-
     const conversationId =
-      existingId ?? crypto.randomUUID();
+      await getUserConversationId(user.id);
 
-    // Save the document in PostgreSQL.
     const document = await saveDocument({
       conversationId,
       name: file.name.slice(0, 180),
       size: file.size,
-      extractedText: text,
+      extractedText,
     });
 
-    // STEP 5: Generate and store vector embeddings.
     let indexed = false;
 
     try {
       const chunkCount = await indexDocument(
         document.id,
-        text
+        extractedText
       );
 
       indexed = true;
 
       console.log(
-        `[INDEXING SUCCESS] ${document.name}: ${chunkCount} chunks`
+        `[INDEXING] ${document.name}: ${chunkCount} chunks`
       );
     } catch (error) {
-      console.error(
-        "[INDEXING FAILED] Document saved, but indexing failed:",
-        error
-      );
+      console.error("Document indexing failed:", error);
     }
 
-    // STEP 6: Return the saved document and status.
-    const response = NextResponse.json(
+    return NextResponse.json(
+      { ...document, indexed },
       {
-        ...document,
-        indexed,
-      },
-      { status: 201 }
-    );
-
-    response.cookies.set(
-      COOKIE_NAME,
-      conversationId,
-      {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+        status: 201,
+        headers: {
+          "Cache-Control": "private, no-store",
+        },
       }
     );
-
-    return response;
   } catch (error) {
     console.error("Document save failed:", error);
 
