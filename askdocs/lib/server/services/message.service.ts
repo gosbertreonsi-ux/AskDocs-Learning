@@ -6,6 +6,14 @@ import {
   saveExchange,
 } from "@/lib/server/repositories/message.repository";
 
+import {
+  findRelevantPassages,
+} from "@/lib/server/services/retrieval.service";
+
+import {
+  generateDocumentAnswer,
+} from "@/lib/server/services/ai.service";
+
 type ReplyResult =
   | { ok: true; message: Message }
   | { ok: false; error: string };
@@ -27,30 +35,56 @@ export async function processQuestion(
     };
   }
 
-  const text = rawText.trim();
+  const question = rawText.trim();
 
-  if (!text) {
+  if (!question || question.length > 2000) {
     return {
       ok: false,
-      error: "Question cannot be empty",
+      error: "Question must be 1–2000 characters",
     };
   }
 
-  if (text.length > 2000) {
-    return {
-      ok: false,
-      error: "Question is too long",
-    };
+  // STEP 1: Retrieve relevant document passages.
+  const { documentCount, sources } =
+    await findRelevantPassages(
+      conversationId,
+      question
+    );
+
+  let answer: string;
+
+  if (documentCount === 0) {
+    answer =
+      "Please upload a PDF document first. " +
+      "You can do this on the My Documents page.";
+  } else if (sources.length === 0) {
+    answer =
+      "I couldn't find a relevant passage in " +
+      "your searched documents.";
+  } else {
+    // STEP 2: Generate the answer with local AI.
+    const generated = await generateDocumentAnswer(
+      question,
+      sources
+    );
+
+    // STEP 3: Attach the retrieved sources.
+    const references = sources
+      .map(
+        source =>
+          `[${source.ref}] ${source.documentName} ` +
+          `(/documents/${source.documentId})`
+      )
+      .join("\n");
+
+    answer =
+      `${generated}\n\nRetrieved sources:\n${references}`;
   }
 
-  // AI is still simulated at this stage.
-  const answer =
-    `You asked: ${text}. ` +
-    "Document search is not connected yet.";
-
+  // STEP 4: Save the question and answer.
   const savedReply = await saveExchange(
     conversationId,
-    text,
+    question,
     answer
   );
 
