@@ -32,6 +32,8 @@ model Document {
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
+  chunks DocumentChunk[]
+
   @@index([conversationId, createdAt])
 }
 
@@ -48,3 +50,19 @@ conversation   Conversation @relation(fields: [conversationId], references: [id]
 
   @@index([conversationId, id])
 }
+
+
+model DocumentChunk {
+  id         String @id @default(uuid())
+  documentId String
+  chunkIndex Int
+  content    String
+  model      String
+  embedding  Unsupported("vector")
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, chunkIndex])
+  @@index([documentId])
+}
+
