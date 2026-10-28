@@ -2,7 +2,7 @@
 const OLLAMA_URL =
   "http://127.0.0.1:11434/api/embed";
 
-const MODEL =
+export const EMBEDDING_MODEL =
   process.env.OLLAMA_EMBED_MODEL ?? "nomic-embed-text";
 
 export async function embedTexts(
@@ -19,7 +19,7 @@ export async function embedTexts(
     },
     signal: AbortSignal.timeout(120000),
     body: JSON.stringify({
-      model: MODEL,
+      model: EMBEDDING_MODEL,
       input: texts,
       truncate: false,
     }),
