@@ -10,6 +10,31 @@ import {
   listDocuments,
 } from "@/lib/server/repositories/document.repository";
 
+import { indexDocument } from
+  "@/lib/server/services/indexing.service";
+
+  
+let indexed = false;
+
+try {
+  const chunkCount = await indexDocument(
+    document.id,
+    text
+  );
+
+  indexed = true;
+
+  console.log(
+    `[INDEXING SUCCESS] ${document.name}: ${chunkCount} chunks`
+  );
+} catch (error) {
+  console.error(
+    "[INDEXING FAILED] Document was saved, but indexing failed:",
+    error
+  );
+}
+
+
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const COOKIE_NAME = "askdocs_session";
@@ -120,7 +145,7 @@ export async function POST(request: Request) {
     });
 
     const response = NextResponse.json(
-      document,
+      { ...document, indexed },
       { status: 201 }
     );
 
