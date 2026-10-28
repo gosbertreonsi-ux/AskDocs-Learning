@@ -13,14 +13,40 @@ enum MessageRole {
   ai
 }
 
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  sessions     AuthSession[]
+  conversation Conversation?
+}
+
+model AuthSession {
+  tokenHash String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
 
 model Conversation {
-  id        String     @id @default(uuid())
-  createdAt DateTime   @default(now())
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Nullable to preserve older anonymous conversations.
+  // Unique means one primary conversation per account.
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   messages  Message[]
   documents Document[]
 }
-
 
 model Document {
   id            String   @id @default(uuid())
@@ -37,20 +63,17 @@ model Document {
   @@index([conversationId, createdAt])
 }
 
-
-
 model Message {
-  id             Int          @id @default(autoincrement())
-  role           MessageRole
-  text           String
-  createdAt      DateTime     @default(now())
+  id        Int         @id @default(autoincrement())
+  role      MessageRole
+  text      String
+  createdAt DateTime    @default(now())
 
-conversationId String
-conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, id])
 }
-
 
 model DocumentChunk {
   id         String @id @default(uuid())
@@ -65,4 +88,3 @@ model DocumentChunk {
   @@unique([documentId, chunkIndex])
   @@index([documentId])
 }
-
