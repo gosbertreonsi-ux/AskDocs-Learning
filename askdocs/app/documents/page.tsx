@@ -101,7 +101,11 @@ export default function DocumentsPage() {
 
       await loadDocuments();
 
-      setSuccess("Document uploaded and processed!");
+      setSuccess(
+  result.indexed
+    ? "Document uploaded and indexed successfully!"
+    : "Document saved, but indexing failed. Check the server logs."
+);
       setFile(null);
     } catch (err) {
       setError(
