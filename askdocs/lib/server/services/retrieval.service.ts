@@ -1,6 +1,11 @@
 
 import { prisma } from "@/lib/server/prisma";
 
+import {
+  embedTexts,
+  cosineSimilarity,
+} from "./embedding.service";
+
 export type Source = {
   ref: number;
   documentId: string;
@@ -8,38 +13,40 @@ export type Source = {
   text: string;
 };
 
-const STOP_WORDS = new Set([
-  "the", "and", "are", "what", "which",
-  "from", "about", "that", "this", "with",
-  "have", "does", "for", "you", "your",
-  "how", "can", "please", "explain", "tell",
-  "me", "into", "was", "were", "where",
-  "who", "why", "when", "is", "of", "in",
-  "to", "a", "an", "on", "it",
-]);
+type Candidate = Omit<Source, "ref">;
 
-function tokenize(text: string): string[] {
-  const words =
-    text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+type ScoredCandidate = Candidate & {
+  similarity: number;
+};
 
-  return words.filter(
-    word => word.length >= 2 && !STOP_WORDS.has(word)
-  );
-}
+const CHUNK_SIZE = 1200;
+const CHUNK_OVERLAP = 200;
 
-export function splitIntoChunks(text: string): string[] {
+// Keep the first experiment small for local hardware.
+const MAX_CHUNKS = 40;
+const BATCH_SIZE = 8;
+
+// Experimental threshold, not a confidence guarantee.
+const MIN_SIMILARITY = 0.30;
+
+export function splitIntoChunks(
+  text: string
+): string[] {
   const clean = text.replace(/\s+/g, " ").trim();
 
+  if (!clean) return [];
+
   const chunks: string[] = [];
-  const chunkSize = 1500;
-  const overlap = 200;
+  const step = CHUNK_SIZE - CHUNK_OVERLAP;
 
   for (
     let start = 0;
     start < clean.length;
-    start += chunkSize - overlap
+    start += step
   ) {
-    chunks.push(clean.slice(start, start + chunkSize));
+    chunks.push(
+      clean.slice(start, start + CHUNK_SIZE)
+    );
   }
 
   return chunks;
@@ -52,7 +59,7 @@ export async function findRelevantPassages(
   documentCount: number;
   sources: Source[];
 }> {
-  // Search only documents belonging to this session.
+  // 1. Load documents from the current conversation.
   const documents = await prisma.document.findMany({
     where: { conversationId },
     select: {
@@ -64,12 +71,14 @@ export async function findRelevantPassages(
     take: 10,
   });
 
-  const questionWords = new Set(tokenize(question));
+  if (documents.length === 0) {
+    return {
+      documentCount: 0,
+      sources: [],
+    };
+  }
 
-  type Candidate = Omit<Source, "ref"> & {
-    score: number;
-  };
-
+  // 2. Split extracted document text into chunks.
   const candidates: Candidate[] = [];
 
   for (const document of documents) {
@@ -78,35 +87,86 @@ export async function findRelevantPassages(
     );
 
     for (const chunk of chunks) {
-      const chunkWords = new Set(tokenize(chunk));
+      candidates.push({
+        documentId: document.id,
+        documentName: document.name,
+        text: chunk,
+      });
 
-      let score = 0;
+      if (candidates.length >= MAX_CHUNKS) break;
+    }
 
-      for (const word of questionWords) {
-        if (chunkWords.has(word)) {
-          score += 1;
-        }
-      }
+    if (candidates.length >= MAX_CHUNKS) break;
+  }
 
-      if (score > 0) {
-        candidates.push({
-          documentId: document.id,
-          documentName: document.name,
-          text: chunk,
-          score,
-        });
-      }
+  if (candidates.length === 0) {
+    return {
+      documentCount: documents.length,
+      sources: [],
+    };
+  }
+
+  // 3. Create an embedding for the user's question.
+  const [queryVector] = await embedTexts([
+    `search_query: ${question}`,
+  ]);
+
+  // 4. Embed document chunks in small batches.
+  const scored: ScoredCandidate[] = [];
+
+  for (
+    let start = 0;
+    start < candidates.length;
+    start += BATCH_SIZE
+  ) {
+    const batch = candidates.slice(
+      start,
+      start + BATCH_SIZE
+    );
+
+    const vectors = await embedTexts(
+      batch.map(
+        item => `search_document: ${item.text}`
+      )
+    );
+
+    for (let i = 0; i < batch.length; i++) {
+      const similarity = cosineSimilarity(
+        queryVector,
+        vectors[i]
+      );
+
+      scored.push({
+        ...batch[i],
+        similarity,
+      });
     }
   }
 
-  candidates.sort((a, b) => b.score - a.score);
+  // 5. Rank passages by semantic similarity.
+  scored.sort(
+    (a, b) => b.similarity - a.similarity
+  );
 
-  const sources: Source[] = candidates
+  console.log(
+    "[RETRIEVAL] Top similarity scores:",
+    scored
+      .slice(0, 4)
+      .map(item => item.similarity.toFixed(3))
+  );
+
+  // 6. Select passages for the AI model.
+  const sources: Source[] = scored
+    .filter(
+      item => item.similarity >= MIN_SIMILARITY
+    )
     .slice(0, 4)
-    .map(({ score: _score, ...source }, index) => ({
-      ...source,
-      ref: index + 1,
-    }));
+    .map(
+      ({ similarity: _similarity, ...item }, index) => ({
+        ref: index + 1,
+        ...item,
+      })
+    );
 
   return {
     documentCount: documents.length,
