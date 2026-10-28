@@ -1,35 +1,31 @@
 
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+
+import {
+  getAuthenticatedUser,
+  getUserConversationId,
+  isSameOrigin,
+} from "@/lib/server/auth";
 
 import {
   getConversationHistory,
   processQuestion,
 } from "@/lib/server/services/message.service";
 
-
-const COOKIE_NAME = "askdocs_session";
-
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
-
-async function getConversationId() {
-  const cookieStore = await cookies();
-  const value = cookieStore.get(COOKIE_NAME)?.value;
-
-  return value && UUID_PATTERN.test(value)
-    ? value
-    : null;
-}
-
 export async function GET() {
-  const conversationId = await getConversationId();
+  const user = await getAuthenticatedUser();
 
-  if (!conversationId) {
-    return NextResponse.json([]);
+  if (!user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
   }
 
   try {
+    const conversationId =
+      await getUserConversationId(user.id);
+
     const messages =
       await getConversationHistory(conversationId);
 
@@ -47,29 +43,29 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  let body: unknown;
-
-  try {
-    body = await request.json();
-  } catch {
+  if (!isSameOrigin(request)) {
     return NextResponse.json(
-      { error: "Invalid JSON" },
-      { status: 400 }
+      { error: "Invalid request origin" },
+      { status: 403 }
     );
   }
 
-  const text =
-    typeof body === "object" &&
-    body !== null &&
-    "text" in body
-      ? body.text
-      : undefined;
+  const user = await getAuthenticatedUser();
 
-  const existingId = await getConversationId();
-  const conversationId =
-    existingId ?? crypto.randomUUID();
+  if (!user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+
+  const body = await request.json().catch(() => null);
+  const text = body?.text;
 
   try {
+    const conversationId =
+      await getUserConversationId(user.id);
+
     const result = await processQuestion(
       conversationId,
       text
@@ -82,33 +78,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = NextResponse.json(
+    return NextResponse.json(
       result.message,
-      { status: 201 }
-    );
-
-    response.cookies.set(
-      COOKIE_NAME,
-      conversationId,
       {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+        status: 201,
+        headers: { "Cache-Control": "private, no-store" },
       }
     );
-
-    return response;
-  }  catch (error) {
+  } catch (error) {
     console.error("Question processing failed:", error);
 
     return NextResponse.json(
-      {
-        error:
-          "Could not process the question. " +
-          "Check the server logs, database and local AI.",
-      },
+      { error: "Could not process the question" },
       { status: 500 }
     );
   }
