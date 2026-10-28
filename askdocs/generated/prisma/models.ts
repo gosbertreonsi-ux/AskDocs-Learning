@@ -11,4 +11,5 @@
 export type * from './models/Conversation'
 export type * from './models/Document'
 export type * from './models/Message'
+export type * from './models/DocumentChunk'
 export type * from './commonInputTypes'

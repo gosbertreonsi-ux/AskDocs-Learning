@@ -32,3 +32,8 @@ export type Document = Prisma.DocumentModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model DocumentChunk
+ * 
+ */
+export type DocumentChunk = Prisma.DocumentChunkModel
