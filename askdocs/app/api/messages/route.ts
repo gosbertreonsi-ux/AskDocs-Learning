@@ -100,11 +100,15 @@ export async function POST(request: Request) {
     );
 
     return response;
-  } catch (error) {
-    console.error("Save message failed:", error);
+  }  catch (error) {
+    console.error("Question processing failed:", error);
 
     return NextResponse.json(
-      { error: "Could not save message" },
+      {
+        error:
+          "Could not process the question. " +
+          "Check the server logs, database and local AI.",
+      },
       { status: 500 }
     );
   }
