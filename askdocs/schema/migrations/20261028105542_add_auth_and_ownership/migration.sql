@@ -5,7 +5,7 @@
 
 */
 -- DropIndex
-DROP INDEX "DocumentChunk_embedding_hnsw_idx";
+DROP INDEX IF EXISTS "DocumentChunk_embedding_hnsw_idx";
 
 -- AlterTable
 ALTER TABLE "Conversation" ADD COLUMN     "userId" TEXT;
