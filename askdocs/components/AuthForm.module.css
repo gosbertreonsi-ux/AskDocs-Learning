@@ -1,28 +1,26 @@
-/* Lesson 17: palette inspired by the user's supplied navy/denim/ivory photograph.
- * AuthForm.tsx and all authentication behavior remain unchanged.
- */
-.page { box-sizing: border-box; display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; padding: 40px 20px; background: var(--ad-cream); color: var(--ad-navy); }
-.content { box-sizing: border-box; width: min(100%, 465px); display: grid; gap: 25px; padding: clamp(25px,4vw,44px); background: var(--ad-paper); border: 1px solid var(--ad-border); border-radius: 17px; box-shadow: 0 16px 40px rgba(23,40,63,.065); }
-.brand { margin: 0; color: var(--ad-navy); font-size: 1.35rem; letter-spacing: -.025em; font-weight: 800; }
-.switcher { display: flex; gap: 10px; border-bottom: 1px solid var(--ad-border); padding-bottom: 12px; }
-.switcher a { color: var(--ad-denim-dark); text-decoration: none; border-radius: 8px; padding: 7px 10px; font-size: .84rem; font-weight: 650; }
-.switcher a[aria-current="page"] { background: var(--ad-denim-light); color: var(--ad-navy); }
-.heading { display: grid; gap: 9px; }
-.heading h1, .heading p { margin: 0; }
-.heading h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.15; letter-spacing: -.04em; }
-.heading p { color: var(--ad-muted); font-size: .91rem; }
-.form { display: grid !important; grid-template-columns: minmax(0,1fr); gap: 19px !important; }
-.field { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; }
-.field > label:not(.checkboxRow) { font-size: .84rem; color: #253e59; font-weight: 700; }
-.form input:not([type="checkbox"]) { box-sizing: border-box; display: block; flex: none; width: 100%; min-width: 0; min-height: 46px; padding: 11px 12px; border: 1px solid #b9c4ce; border-radius: 9px; background: #fff; color: var(--ad-navy); font: inherit; }
-.field small { color: var(--ad-muted); font-size: .74rem; }
-.checkboxRow { display: flex; align-items: center; gap: 9px; width: fit-content; color: var(--ad-muted); font-size: .82rem; }
+/* AskDocs authentication: layout and palette only. AuthForm API behavior is unchanged. */
+.page { box-sizing: border-box; display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; padding: 28px 18px; background: var(--ad-violet); color: var(--ad-ink); font-family: var(--ad-font); }
+.content { box-sizing: border-box; width: min(100%, 450px); padding: clamp(24px,4vw,40px); display: grid; gap: 22px; background: #fff; border: 1px solid #efedf4; box-shadow: 0 20px 55px rgba(50,42,97,.18); }
+.brand { font-size: 19px; font-weight: 790; letter-spacing: -.045em; margin: 0; color: #7062bf; }
+.switcher { display: flex; gap: 13px; padding-bottom: 13px; border-bottom: 1px solid #eeeaf6; }
+.switcher a { font-size: 11px; font-weight: 650; padding: 8px 13px; text-decoration: none; color: #736d81; }
+.switcher a[aria-current="page"] { background: #8981d7; color: white; }
+.heading { display: grid; gap: 8px; }
+.heading h1,.heading p { margin: 0; }
+.heading h1 { color: #343147; font-size: clamp(24px,4vw,31px); letter-spacing: -.05em; line-height: 1.15; }
+.heading p { font-size: 12px; color: var(--ad-muted); line-height: 1.7; }
+.form { display: grid !important; grid-template-columns: minmax(0,1fr); gap: 17px !important; }
+.field { display: grid; grid-template-columns: minmax(0,1fr); gap: 7px; }
+.field > label:not(.checkboxRow) { font-size: 11px; font-weight: 700; color: #484357; }
+.form input:not([type="checkbox"]) { display: block; box-sizing: border-box; flex: none; width: 100%; min-width: 0; min-height: 43px; padding: 10px 12px; border: 1px solid #dcd9e8; background: #fff; border-radius: 2px; color: var(--ad-ink); font: inherit; font-size: 12px; }
+.field small { color: var(--ad-muted); font-size: 10px; }
+.checkboxRow { display: flex; align-items: center; gap: 8px; width: fit-content; font-size: 11px; color: #777181; }
 .checkboxRow input[type="checkbox"] { all: revert; margin: 0; }
-.form button { box-sizing: border-box; display: block; min-height: 45px; padding: 10px 14px; border: none; border-radius: 9px; background: var(--ad-denim-dark); color: #fff; font: inherit; font-weight: 750; cursor: pointer; }
-.form button:hover:not(:disabled) { background: var(--ad-navy-2); }
-.form button:disabled { opacity: .65; cursor: wait; }
-.message { background: var(--ad-cream); border-left: 3px solid var(--ad-taupe); padding: 10px; margin: 0; font-size: .86rem; color: var(--ad-navy); }
-.footer { margin: 0; font-size: .88rem; color: var(--ad-muted); }
-.footer a { color: #284d73; font-weight: 700; }
-.page :is(a,input,button):focus-visible { outline: 3px solid var(--ad-denim); outline-offset: 3px; }
-@media (max-width: 480px) { .page { padding: 18px 14px; } .content { gap: 19px; padding: 24px 19px; } }
+.form button { box-sizing: border-box; display: block; min-height: 44px; padding: 11px 14px; background: #8981d7; color: white; border: 0; border-radius: 2px; font: inherit; font-size: 12px; font-weight: 730; cursor: pointer; }
+.form button:hover:not(:disabled) { background: #7167c3; }
+.form button:disabled { opacity: .6; cursor: wait; }
+.message { background: #f5f0fd; color: #6852a2; border-left: 2px solid #8b7ddb; padding: 10px; margin: 0; font-size: 11px; }
+.footer { margin: 0; font-size: 11px; color: #777181; }
+.footer a { color: #7062bf; text-decoration: underline; text-underline-offset: 2px; font-weight: 720; }
+.page :is(a,input,button):focus-visible { outline: 3px solid #49348c; outline-offset: 3px; }
+@media (max-width: 480px) { .page { padding: 14px; } .content { padding: 25px 20px; } }

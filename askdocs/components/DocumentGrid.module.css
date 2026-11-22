@@ -1,0 +1,25 @@
+.grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 15px; list-style: none; padding: 0; }
+.card { min-width: 0; min-height: 235px; background: #fff; border: 1px solid #f0eff5; box-shadow: var(--ad-shadow); padding: 17px 17px 13px; display: flex; flex-direction: column; }
+.date { color: #9e9aa8; font-size: 10px; margin-bottom: 12px; }
+.cardTitleRow { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.dot { display: inline-block; flex: 0 0 6px; width: 6px; height: 6px; margin-top: 6px; border-radius: 50%; background: #e6ba76; }
+.ready { background: #83ddce; }.pending { background: #edc87b; }.processing { background: #9a8be1; }.failed { background: #e8a29d; }
+.title { font-size: 13px; line-height: 1.55; color: #2e2d3f; font-weight: 720; text-decoration: none; overflow-wrap: anywhere; }
+.title:hover { color: #7669be; text-decoration: underline; text-underline-offset: 3px; }
+.description { color: #6c6a7a; font-size: 11px; line-height: 1.65; margin-top: 10px; }
+.preview { flex: 1; min-height: 80px; margin-top: 12px; background: linear-gradient(145deg,#f4f1ff,#edebfb); border-radius: 2px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.preview::before { content: ""; position: absolute; width: 135px; height: 135px; border: 1px solid rgba(140,122,206,.19); border-radius: 50%; top: -95px; right: -35px; }
+.previewFile { display: grid; gap: 4px; width: 49px; height: 61px; background: white; border: 1px solid #dfdaef; border-radius: 3px; padding: 10px 8px; box-shadow: 4px 6px 0 rgba(152,135,209,.13); }
+.previewFile span { font-size: 9px; color: #8574ca; font-weight: 800; }
+.previewFile i { display: block; height: 3px; border-radius: 2px; background: #d8d2ec; }
+.previewFile i:last-child { width: 60%; }
+.previewNumber { position: absolute; bottom: 8px; right: 8px; color: #a398ce; font-size: 9px; font-weight: 700; }
+.cardFooter { display: flex; gap: 8px; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 10px; color: #888698; }
+.status { text-transform: capitalize; }
+.retryBlock { margin-top: 11px; border-top: 1px solid #eeeaf5; padding-top: 9px; }
+.retryBlock p { font-size: 10px; color: #68596c; line-height: 1.4; overflow-wrap: anywhere; }
+.retryBlock button { margin-top: 8px; border: 1px solid #9a8edc; color: #6658ba; background: #fff; cursor: pointer; font: inherit; font-size: 10px; padding: 7px 8px; border-radius: 3px; }
+.retryBlock button:disabled { opacity: .5; cursor: not-allowed; }
+@media (max-width: 1250px) { .grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 1020px) { .grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } .card { min-height: 220px; } }

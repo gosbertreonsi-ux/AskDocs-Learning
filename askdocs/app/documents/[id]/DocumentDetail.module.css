@@ -1,13 +1,13 @@
-.page { display: grid; gap: 22px; min-width: 0; }
-.backLink { color: var(--ad-denim-dark); text-decoration: none; font-size: .87rem; font-weight: 700; }
+.page { min-width: 0; display: grid; gap: 21px; }
+.backLink { color: var(--ad-violet-deep); text-decoration: none; font-size: 11px; font-weight: 700; }
 .backLink:hover { text-decoration: underline; }
-.article { display: grid; gap: 24px; min-width: 0; }
+.article { display: grid; gap: 23px; min-width: 0; }
 .heading { overflow-wrap: anywhere; }
-.eyebrow { font-size: .7rem; font-weight: 800; letter-spacing: .12em; color: var(--ad-denim-dark); margin-bottom: 10px; }
-.heading h1 { font-size: clamp(1.7rem,3vw,2.55rem); color: var(--ad-navy); letter-spacing: -.04em; line-height: 1.15; }
-.heading p:not(.eyebrow) { color: var(--ad-muted); margin-top: 10px; }
-.reader { background: var(--ad-paper); border: 1px solid var(--ad-border); border-radius: 16px; min-width: 0; overflow: hidden; }
-.readerHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--ad-ivory); padding: 17px 24px; border-bottom: 1px solid var(--ad-border); }
-.readerHeading h2 { font-size: 1rem; color: var(--ad-navy); }
-.readerHeading span { font-size: .75rem; color: var(--ad-muted); }
-.documentText { padding: clamp(18px,3.2vw,38px); font-size: .92rem; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; color: var(--ad-ink); }
+.eyebrow { color: #8a7fb0; font-size: 9px; letter-spacing: .13em; font-weight: 800; margin-bottom: 10px; }
+.heading h1 { font-size: clamp(24px,3vw,31px); color: var(--ad-ink); letter-spacing: -.04em; line-height: 1.2; }
+.heading p:not(.eyebrow) { margin-top: 10px; font-size: 11px; color: var(--ad-muted); }
+.reader { min-width: 0; background: #fff; border: 1px solid #f0eef5; box-shadow: var(--ad-shadow); }
+.readerHeading { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 23px; background: #fff; border-bottom: 1px solid #efedf6; }
+.readerHeading h2 { font-size: 14px; font-weight: 720; color: #363248; }
+.readerHeading span { font-size: 10px; color: #9893aa; }
+.documentText { padding: clamp(19px,3vw,38px); font-size: 12px; line-height: 1.95; white-space: pre-wrap; overflow-wrap: anywhere; color: #414052; }

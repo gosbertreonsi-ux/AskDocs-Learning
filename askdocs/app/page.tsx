@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import Chat from "@/components/Chat";
+import RecentDocuments from "@/components/RecentDocuments";
 import WorkspaceShell from "@/components/WorkspaceShell";
 import { getAuthenticatedUser } from "@/lib/server/auth";
 import styles from "./WorkspaceHome.module.css";
@@ -9,32 +9,22 @@ import styles from "./WorkspaceHome.module.css";
 async function PrivateHome() {
   const user = await getAuthenticatedUser();
   if (!user) redirect("/login");
-
   return (
     <WorkspaceShell email={user.email}>
-      <section className={styles.home} aria-labelledby="chat-heading">
-        <div className={styles.hero}>
-          <div>
-            <p className={styles.eyebrow}>YOUR RESEARCH ASSISTANT</p>
-            <h1 id="chat-heading">Ask better questions.<br />Find grounded answers.</h1>
-            <p className={styles.intro}>
-              Explore what your documents actually say. AskDocs retrieves passages
-              and links to the sources behind its answers.
-            </p>
-          </div>
-          <Link href="/documents" className={styles.documentsLink}>My document library</Link>
+      <div className={styles.home}>
+        <div className={styles.titleBar}>
+          <div><p className={styles.eyebrow}>YOUR SPACE</p><h1>Overview</h1></div>
+          <p>Find your PDFs, explore answers, and keep learning.</p>
         </div>
-        <div className={styles.tipRow} aria-label="Getting started">
-          <span><b>01</b> Upload a PDF</span>
-          <span><b>02</b> Ask a question</span>
-          <span><b>03</b> Check the sources</span>
-        </div>
-        <Chat />
-      </section>
+        <RecentDocuments />
+        <section id="askdocs-chat" className={styles.chatSection} aria-labelledby="askdocs-chat-heading">
+          <div className={styles.chatTitle}><h2 id="askdocs-chat-heading">Ask your documents</h2><p>Search for grounded answers from your own uploaded files.</p></div>
+          <Chat />
+        </section>
+      </div>
     </WorkspaceShell>
   );
 }
-
 export default function Home() {
   return <Suspense fallback={<p style={{ padding: 24 }}>Loading workspace…</p>}><PrivateHome /></Suspense>;
 }

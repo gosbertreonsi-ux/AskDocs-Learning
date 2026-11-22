@@ -1,10 +1,12 @@
-.bubbleRow { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.bubbleRow { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; gap: 5px; }
 .userRow { align-items: flex-end; }
-.role { font-size: .72rem; font-weight: 750; color: var(--ad-muted); }
-.bubble { max-width: min(88%, 760px); border-radius: 14px; padding: 13px 17px; font-size: .91rem; line-height: 1.65; overflow-wrap: anywhere; }
-.aiBubble { background: #f0f4f7; color: var(--ad-navy); border: 1px solid var(--ad-denim-light); border-top-left-radius: 4px; }
-.userBubble { background: var(--ad-denim-dark); color: #fff; border: 1px solid var(--ad-denim-dark); border-top-right-radius: 4px; }
+.role { font-size: 10px; font-weight: 700; color: #89849a; }
+.bubble { max-width: min(88%,760px); padding: 13px 16px; color: #3c374d; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.aiBubble { background: #f3f1fb; border-left: 2px solid #a89de1; }
+.userBubble { background: #8981d7; color: #fff; }
 .line { white-space: pre-wrap; }
-.sourceLink { color: #274f77; font-weight: 750; text-decoration: underline; text-underline-offset: 2px; }
-.sourceLink:hover { color: var(--ad-navy); }
+.sourceLink { color: #6253b1; text-decoration: underline; text-underline-offset: 2px; font-weight: 700; }
+.sourceLink:hover { color: #46388c; }
 @media (max-width: 520px) { .bubble { max-width: 96%; } }
+
+.aiRow { align-items: flex-start; }

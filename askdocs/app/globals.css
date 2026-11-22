@@ -67,20 +67,38 @@ body:has(.askdocs-auth-screen) > header {
   display: none;
 }
 
-/* BEGIN AskDocs Lesson 17: color tokens + hide old header in workspace */
+/* BEGIN AskDocs Violet Workspace v2 */
 :root {
-  --ad-navy: #17283f; /* dark navy clothing */
-  --ad-navy-2: #243951;
-  --ad-ink: #1d2c40;
-  --ad-denim: #6689ac; /* light denim jeans */
-  --ad-denim-dark: #425f80; /* deeper denim details */
-  --ad-denim-light: #dce7ef; /* light washed blue */
-  --ad-cream: #f3eee7; /* warm curtain */
-  --ad-taupe: #a28d7e; /* neutral accessory */
-  --ad-ivory: #faf8f3;
-  --ad-paper: #fffefd;
-  --ad-border: #dbd7d0;
-  --ad-muted: #536477;
+  --ad-violet: #8981d7;
+  --ad-violet-deep: #7167c3;
+  --ad-violet-active: #a49aeb;
+  --ad-lavender: #f0eefb;
+  --ad-canvas: #f8f8fb;
+  --ad-paper: #ffffff;
+  --ad-navy: #323047;
+  --ad-navy-2: #39364f;
+  --ad-ink: #323047;
+  --ad-muted: #868596;
+  --ad-denim: #978adc;
+  --ad-denim-dark: #746ac4;
+  --ad-denim-light: #eeeafa;
+  --ad-cream: #f8f8fb;
+  --ad-taupe: #a4a0b2;
+  --ad-ivory: #fff;
+  --ad-border: #e8e7f0;
+  --ad-shadow: 0 2px 12px rgba(49, 40, 100, .055);
+  --ad-font: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+body:has(.askdocs-workspace) {
+  background: var(--ad-violet);
+  color: var(--ad-ink);
+  font-family: var(--ad-font);
 }
 body:has(.askdocs-workspace) > header { display: none; }
-/* END AskDocs Lesson 17 */
+body:has(.askdocs-auth-screen) {
+  background: var(--ad-violet);
+  color: var(--ad-ink);
+  font-family: var(--ad-font);
+}
+body:has(.askdocs-auth-screen) > header { display: none; }
+/* END AskDocs Violet Workspace v2 */
