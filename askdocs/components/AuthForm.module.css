@@ -1,0 +1,113 @@
+/*
+ * AskDocs authentication layout only.
+ * Intentionally no theme, colors, gradients, shadows, decorative panels,
+ * custom borders, or custom backgrounds. Native browser controls and links.
+ */
+.page {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 32px 20px;
+}
+
+.content {
+  box-sizing: border-box;
+  width: min(100%, 440px);
+  display: grid;
+  gap: 24px;
+}
+
+.brand {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.heading {
+  display: grid;
+  gap: 8px;
+}
+
+.heading h1,
+.heading p {
+  margin: 0;
+}
+
+.heading h1 {
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  line-height: 1.2;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+/* Undo the app's global `form input` color and border styling here. */
+.form input:not([type="checkbox"]) {
+  all: revert;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+}
+
+.checkboxRow input[type="checkbox"] {
+  all: revert;
+  margin: 0;
+}
+
+/* Restore the browser's native button appearance. */
+.form button {
+  all: revert;
+  box-sizing: border-box;
+  display: block;
+  min-height: 44px;
+  padding: 10px 14px;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.form button:disabled {
+  cursor: wait;
+}
+
+.message,
+.footer {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 28px 16px;
+  }
+  .content {
+    gap: 20px;
+  }
+}

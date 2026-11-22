@@ -55,3 +55,14 @@ form button:hover { opacity: 0.9; }
   .layout { grid-template-columns: 1fr; }
   aside { border-right: none; border-bottom: 1px solid #ddd; }
 }
+/* AskDocs Auth UI: hide workspace header only on auth routes */
+body:has(.askdocs-auth-screen) > header { display: none; }
+
+/* AskDocs Auth Neutral Layout v2: native page defaults */
+body:has(.askdocs-auth-screen) {
+  background: revert;
+  color: revert;
+}
+body:has(.askdocs-auth-screen) > header {
+  display: none;
+}
