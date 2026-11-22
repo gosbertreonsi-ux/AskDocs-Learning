@@ -66,3 +66,21 @@ body:has(.askdocs-auth-screen) {
 body:has(.askdocs-auth-screen) > header {
   display: none;
 }
+
+/* BEGIN AskDocs Lesson 17: color tokens + hide old header in workspace */
+:root {
+  --ad-navy: #17283f; /* dark navy clothing */
+  --ad-navy-2: #243951;
+  --ad-ink: #1d2c40;
+  --ad-denim: #6689ac; /* light denim jeans */
+  --ad-denim-dark: #425f80; /* deeper denim details */
+  --ad-denim-light: #dce7ef; /* light washed blue */
+  --ad-cream: #f3eee7; /* warm curtain */
+  --ad-taupe: #a28d7e; /* neutral accessory */
+  --ad-ivory: #faf8f3;
+  --ad-paper: #fffefd;
+  --ad-border: #dbd7d0;
+  --ad-muted: #536477;
+}
+body:has(.askdocs-workspace) > header { display: none; }
+/* END AskDocs Lesson 17 */

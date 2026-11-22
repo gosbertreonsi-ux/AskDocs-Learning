@@ -1,0 +1,13 @@
+.page { display: grid; gap: 22px; min-width: 0; }
+.backLink { color: var(--ad-denim-dark); text-decoration: none; font-size: .87rem; font-weight: 700; }
+.backLink:hover { text-decoration: underline; }
+.article { display: grid; gap: 24px; min-width: 0; }
+.heading { overflow-wrap: anywhere; }
+.eyebrow { font-size: .7rem; font-weight: 800; letter-spacing: .12em; color: var(--ad-denim-dark); margin-bottom: 10px; }
+.heading h1 { font-size: clamp(1.7rem,3vw,2.55rem); color: var(--ad-navy); letter-spacing: -.04em; line-height: 1.15; }
+.heading p:not(.eyebrow) { color: var(--ad-muted); margin-top: 10px; }
+.reader { background: var(--ad-paper); border: 1px solid var(--ad-border); border-radius: 16px; min-width: 0; overflow: hidden; }
+.readerHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--ad-ivory); padding: 17px 24px; border-bottom: 1px solid var(--ad-border); }
+.readerHeading h2 { font-size: 1rem; color: var(--ad-navy); }
+.readerHeading span { font-size: .75rem; color: var(--ad-muted); }
+.documentText { padding: clamp(18px,3.2vw,38px); font-size: .92rem; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; color: var(--ad-ink); }
