@@ -3,8 +3,9 @@ on:
   push:
     branches:
       - deploy/askdocs-free-staging-20261122
+      - fix/askdocs-neon-rate-limits-20261122
   pull_request:
-    branches: [main]
+    branches: [main, deploy/askdocs-free-staging-20261122]
 
 jobs:
   validate:
@@ -30,6 +31,7 @@ jobs:
       DATABASE_URL: postgresql://askdocs:local_ci_only_password@127.0.0.1:5432/askdocs
       REDIS_URL: redis://127.0.0.1:6381
       NODE_ENV: production
+      ASKDOCS_RUN_DB_TESTS: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
