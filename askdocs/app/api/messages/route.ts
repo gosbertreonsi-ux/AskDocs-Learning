@@ -4,7 +4,12 @@ import {
   getUserConversationId,
   isSameOrigin,
 } from '@/lib/server/auth';
-import { getConversationHistory, processQuestion } from '@/lib/server/services/message.service';
+import {
+  getConversationHistory,
+  processQuestion,
+} from '@/lib/server/services/message.service';
+import { readJsonWithinLimit } from '@/lib/server/security/read-json';
+import { enforceRateLimits } from '@/lib/server/security/rate-limit';
 
 export async function GET() {
   const user = await getAuthenticatedUser();
@@ -29,7 +34,16 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
   }
-  const body = await request.json().catch(() => null);
+  const blocked = await enforceRateLimits([
+    { bucket: 'ai:questions', identifier: user.id, max: 25, windowSeconds: 300 },
+  ]);
+  if (blocked) return blocked;
+
+  const parsed = await readJsonWithinLimit(request, 12000);
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: parsed.status });
+  }
+  const body = parsed.data as { text?: unknown } | null;
   try {
     const conversationId = await getUserConversationId(user.id);
     const result = await processQuestion(conversationId, body?.text);

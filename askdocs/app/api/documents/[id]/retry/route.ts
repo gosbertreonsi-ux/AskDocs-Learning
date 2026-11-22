@@ -6,6 +6,7 @@ import {
   isSameOrigin,
 } from "@/lib/server/auth";
 import { enqueueDocumentIndex, getIndexQueue } from "@/lib/server/queue/index";
+import { enforceRateLimits } from '@/lib/server/security/rate-limit';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -17,6 +18,11 @@ export async function POST(request: Request, { params }: Ctx) {
   if (!user) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
+  const blocked = await enforceRateLimits([
+    { bucket: 'pdf:retry', identifier: user.id, max: 10, windowSeconds: 600 },
+  ]);
+  if (blocked) return blocked;
+
   const { id } = await params;
   const conversationId = await getUserConversationId(user.id);
   const document = await prisma.document.findFirst({

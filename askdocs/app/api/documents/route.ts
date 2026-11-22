@@ -12,6 +12,7 @@ import {
   listDocuments,
 } from "@/lib/server/repositories/document.repository";
 import { enqueueDocumentIndex } from "@/lib/server/queue/index";
+import { enforceRateLimits } from '@/lib/server/security/rate-limit';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -42,6 +43,18 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
+
+  // This is an early rejection for known large requests, NOT a replacement
+  // for a streaming upload/body limit at the trusted reverse proxy.
+  const length = request.headers.get('content-length');
+  if (length !== null && /^\d+$/.test(length) && Number(length) > 6 * 1024 * 1024) {
+    return NextResponse.json({ error: 'Upload request is too large' }, { status: 413 });
+  }
+
+  const blocked = await enforceRateLimits([
+    { bucket: 'pdf:uploads', identifier: user.id, max: 6, windowSeconds: 600 },
+  ]);
+  if (blocked) return blocked;
 
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
