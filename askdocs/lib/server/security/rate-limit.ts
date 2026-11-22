@@ -1,10 +1,7 @@
-import Redis from 'ioredis';
 import { NextResponse } from 'next/server';
-import {
-  secureRateKey,
-  getTrustedClientIp,
-  limitDecision,
-} from './security-core';
+import { prisma } from '@/lib/server/prisma';
+import { RATE_LIMIT_SQL } from './rate-limit-sql';
+import { secureRateKey, getTrustedClientIp, limitDecision } from './security-core';
 
 export type RateRule = {
   bucket: string;
@@ -13,70 +10,27 @@ export type RateRule = {
   windowSeconds: number;
 };
 
-/** Atomic fixed-window count and expiry (no competing INCR/EXPIRE race). */
-const SCRIPT = `
-local count = redis.call('INCR', KEYS[1])
-if count == 1 then
-  redis.call('PEXPIRE', KEYS[1], ARGV[1])
-end
-return {count, redis.call('PTTL', KEYS[1])}
-`;
-
-const singleton = globalThis as typeof globalThis & {
-  askdocsSecurityRedis?: Redis;
-  askdocsSecurityRedisConnecting?: Promise<Redis>;
-};
-
-async function connection(): Promise<Redis> {
-  if (singleton.askdocsSecurityRedis?.status === 'ready') {
-    return singleton.askdocsSecurityRedis;
-  }
-  if (singleton.askdocsSecurityRedisConnecting) {
-    return singleton.askdocsSecurityRedisConnecting;
-  }
-  const redis = new Redis(process.env.REDIS_URL ?? 'redis://127.0.0.1:6381', {
-    lazyConnect: true,
-    enableOfflineQueue: false,
-    maxRetriesPerRequest: 1,
-    connectTimeout: 2000,
-    retryStrategy: () => null,
-  });
-  redis.on('error', () => undefined); // avoid dumping connection credentials
-  singleton.askdocsSecurityRedis = redis;
-  const connecting = redis.connect()
-    .then(() => redis)
-    .catch((error: unknown) => {
-      redis.disconnect();
-      if (singleton.askdocsSecurityRedis === redis) {
-        singleton.askdocsSecurityRedis = undefined;
-      }
-      throw error;
-    })
-    .finally(() => {
-      singleton.askdocsSecurityRedisConnecting = undefined;
-    });
-  singleton.askdocsSecurityRedisConnecting = connecting;
-  return connecting;
-}
-
 /**
- * Return an HTTP response if blocked or Redis unavailable, otherwise null.
- * Fail closed on a Redis outage for authentication and expensive AI operations.
+ * Atomic PostgreSQL fixed-window rate limits shared by all web instances.
+ * No emails/IP addresses stored in the table: only hashed keys.
+ * If PostgreSQL fails, we fail closed rather than disabling protection.
  */
 export async function enforceRateLimits(rules: RateRule[]): Promise<NextResponse | null> {
   try {
-    const redis = await connection();
     for (const rule of rules) {
-      if (!Number.isSafeInteger(rule.windowSeconds) || rule.windowSeconds < 1) {
+      if (!Number.isSafeInteger(rule.windowSeconds) || rule.windowSeconds < 1 || rule.windowSeconds > 86400) {
         throw new Error('Invalid rate limit window');
       }
-      const reply = (await redis.eval(
-        SCRIPT,
-        1,
-        secureRateKey(rule.bucket, rule.identifier),
-        String(rule.windowSeconds * 1000)
-      )) as [number, number];
-      const decision = limitDecision(Number(reply[0]), rule.max, Number(reply[1]));
+      const key = secureRateKey(rule.bucket, rule.identifier);
+      // Static SQL with bound values; no user-controlled SQL identifiers.
+      const rows = await prisma.$queryRawUnsafe<Array<{ hits: number; windowEnd: Date }>>(
+        RATE_LIMIT_SQL, key, rule.windowSeconds
+      );
+      if (rows.length !== 1 || !Number.isSafeInteger(rows[0].hits)) {
+        throw new Error('Unexpected rate limit counter');
+      }
+      const remainingMs = new Date(rows[0].windowEnd).getTime() - Date.now();
+      const decision = limitDecision(rows[0].hits, rule.max, remainingMs);
       if (!decision.allowed) {
         return NextResponse.json(
           { error: 'Too many requests. Please try again later.' },
@@ -97,8 +51,8 @@ export async function enforceRateLimits(rules: RateRule[]): Promise<NextResponse
 }
 
 /**
- * For production only: enable ASKDOCS_TRUST_PROXY_IP=true after configuring
- * a trusted reverse proxy to REPLACE X-Forwarded-For from clients.
+ * Trust a client-IP header only if a verified upstream reverse proxy
+ * replaces X-Forwarded-For. Disabled by default.
  */
 export function optionalSourceRule(
   request: Request,
