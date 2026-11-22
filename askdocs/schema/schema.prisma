@@ -90,3 +90,12 @@ model DocumentChunk {
   @@unique([documentId, chunkIndex])
   @@index([documentId])
 }
+
+// Atomic request counters for hosted API rate limiting.
+model RateLimitCounter {
+  key String @id
+  hits Int @default(0)
+  windowEnd DateTime @db.Timestamptz(3)
+
+  @@index([windowEnd])
+}
