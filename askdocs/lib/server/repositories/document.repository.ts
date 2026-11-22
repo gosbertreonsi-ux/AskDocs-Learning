@@ -1,4 +1,3 @@
-
 import { prisma } from "@/lib/server/prisma";
 
 export async function saveDocument(data: {
@@ -9,30 +8,25 @@ export async function saveDocument(data: {
 }) {
   return prisma.$transaction(async (tx) => {
     await tx.conversation.upsert({
-      where: {
-        id: data.conversationId,
-      },
+      where: { id: data.conversationId },
       update: {},
-      create: {
-        id: data.conversationId,
-      },
+      create: { id: data.conversationId },
     });
 
     return tx.document.create({
-      data,
+      data: { ...data, indexStatus: "PENDING" },
       select: {
         id: true,
         name: true,
         size: true,
         createdAt: true,
+        indexStatus: true,
       },
     });
   });
 }
 
-export async function listDocuments(
-  conversationId: string
-) {
+export async function listDocuments(conversationId: string) {
   return prisma.document.findMany({
     where: { conversationId },
     orderBy: { createdAt: "desc" },
@@ -41,14 +35,14 @@ export async function listDocuments(
       name: true,
       size: true,
       createdAt: true,
+      indexStatus: true,
+      indexError: true,
+      indexedAt: true,
     },
   });
 }
 
-export async function findDocument(
-  id: string,
-  conversationId: string
-) {
+export async function findDocument(id: string, conversationId: string) {
   return prisma.document.findFirst({
     where: { id, conversationId },
     select: {

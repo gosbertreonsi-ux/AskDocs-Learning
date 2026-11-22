@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -39,8 +38,6 @@ model Conversation {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
 
-  // Nullable to preserve older anonymous conversations.
-  // Unique means one primary conversation per account.
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -55,12 +52,17 @@ model Document {
   extractedText String
   createdAt     DateTime @default(now())
 
+  indexStatus String    @default("PENDING")
+  indexError  String?
+  indexedAt   DateTime?
+
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   chunks DocumentChunk[]
 
   @@index([conversationId, createdAt])
+  @@index([indexStatus])
 }
 
 model Message {

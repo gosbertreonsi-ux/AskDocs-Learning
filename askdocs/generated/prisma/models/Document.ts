@@ -40,6 +40,9 @@ export type DocumentMinAggregateOutputType = {
   size: number | null
   extractedText: string | null
   createdAt: Date | null
+  indexStatus: string | null
+  indexError: string | null
+  indexedAt: Date | null
   conversationId: string | null
 }
 
@@ -49,6 +52,9 @@ export type DocumentMaxAggregateOutputType = {
   size: number | null
   extractedText: string | null
   createdAt: Date | null
+  indexStatus: string | null
+  indexError: string | null
+  indexedAt: Date | null
   conversationId: string | null
 }
 
@@ -58,6 +64,9 @@ export type DocumentCountAggregateOutputType = {
   size: number
   extractedText: number
   createdAt: number
+  indexStatus: number
+  indexError: number
+  indexedAt: number
   conversationId: number
   _all: number
 }
@@ -77,6 +86,9 @@ export type DocumentMinAggregateInputType = {
   size?: true
   extractedText?: true
   createdAt?: true
+  indexStatus?: true
+  indexError?: true
+  indexedAt?: true
   conversationId?: true
 }
 
@@ -86,6 +98,9 @@ export type DocumentMaxAggregateInputType = {
   size?: true
   extractedText?: true
   createdAt?: true
+  indexStatus?: true
+  indexError?: true
+  indexedAt?: true
   conversationId?: true
 }
 
@@ -95,6 +110,9 @@ export type DocumentCountAggregateInputType = {
   size?: true
   extractedText?: true
   createdAt?: true
+  indexStatus?: true
+  indexError?: true
+  indexedAt?: true
   conversationId?: true
   _all?: true
 }
@@ -191,6 +209,9 @@ export type DocumentGroupByOutputType = {
   size: number
   extractedText: string
   createdAt: Date
+  indexStatus: string
+  indexError: string | null
+  indexedAt: Date | null
   conversationId: string
   _count: DocumentCountAggregateOutputType | null
   _avg: DocumentAvgAggregateOutputType | null
@@ -223,6 +244,9 @@ export type DocumentWhereInput = {
   size?: Prisma.IntFilter<"Document"> | number
   extractedText?: Prisma.StringFilter<"Document"> | string
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  indexStatus?: Prisma.StringFilter<"Document"> | string
+  indexError?: Prisma.StringNullableFilter<"Document"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   conversationId?: Prisma.StringFilter<"Document"> | string
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   chunks?: Prisma.DocumentChunkListRelationFilter
@@ -234,6 +258,9 @@ export type DocumentOrderByWithRelationInput = {
   size?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
+  indexError?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   conversation?: Prisma.ConversationOrderByWithRelationInput
   chunks?: Prisma.DocumentChunkOrderByRelationAggregateInput
@@ -248,6 +275,9 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   size?: Prisma.IntFilter<"Document"> | number
   extractedText?: Prisma.StringFilter<"Document"> | string
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  indexStatus?: Prisma.StringFilter<"Document"> | string
+  indexError?: Prisma.StringNullableFilter<"Document"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   conversationId?: Prisma.StringFilter<"Document"> | string
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   chunks?: Prisma.DocumentChunkListRelationFilter
@@ -259,6 +289,9 @@ export type DocumentOrderByWithAggregationInput = {
   size?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
+  indexError?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   _count?: Prisma.DocumentCountOrderByAggregateInput
   _avg?: Prisma.DocumentAvgOrderByAggregateInput
@@ -276,6 +309,9 @@ export type DocumentScalarWhereWithAggregatesInput = {
   size?: Prisma.IntWithAggregatesFilter<"Document"> | number
   extractedText?: Prisma.StringWithAggregatesFilter<"Document"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
+  indexStatus?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  indexError?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
+  indexedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
   conversationId?: Prisma.StringWithAggregatesFilter<"Document"> | string
 }
 
@@ -285,6 +321,9 @@ export type DocumentCreateInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   conversation: Prisma.ConversationCreateNestedOneWithoutDocumentsInput
   chunks?: Prisma.DocumentChunkCreateNestedManyWithoutDocumentInput
 }
@@ -295,6 +334,9 @@ export type DocumentUncheckedCreateInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   conversationId: string
   chunks?: Prisma.DocumentChunkUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -305,6 +347,9 @@ export type DocumentUpdateInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutDocumentsNestedInput
   chunks?: Prisma.DocumentChunkUpdateManyWithoutDocumentNestedInput
 }
@@ -315,6 +360,9 @@ export type DocumentUncheckedUpdateInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   chunks?: Prisma.DocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -325,6 +373,9 @@ export type DocumentCreateManyInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   conversationId: string
 }
 
@@ -334,6 +385,9 @@ export type DocumentUpdateManyMutationInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type DocumentUncheckedUpdateManyInput = {
@@ -342,6 +396,9 @@ export type DocumentUncheckedUpdateManyInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -361,6 +418,9 @@ export type DocumentCountOrderByAggregateInput = {
   size?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
+  indexError?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
 }
 
@@ -374,6 +434,9 @@ export type DocumentMaxOrderByAggregateInput = {
   size?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
+  indexError?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
 }
 
@@ -383,6 +446,9 @@ export type DocumentMinOrderByAggregateInput = {
   size?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
+  indexError?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
 }
 
@@ -445,6 +511,10 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type DocumentUpdateOneRequiredWithoutChunksNestedInput = {
   create?: Prisma.XOR<Prisma.DocumentCreateWithoutChunksInput, Prisma.DocumentUncheckedCreateWithoutChunksInput>
   connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutChunksInput
@@ -459,6 +529,9 @@ export type DocumentCreateWithoutConversationInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   chunks?: Prisma.DocumentChunkCreateNestedManyWithoutDocumentInput
 }
 
@@ -468,6 +541,9 @@ export type DocumentUncheckedCreateWithoutConversationInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   chunks?: Prisma.DocumentChunkUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -506,6 +582,9 @@ export type DocumentScalarWhereInput = {
   size?: Prisma.IntFilter<"Document"> | number
   extractedText?: Prisma.StringFilter<"Document"> | string
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  indexStatus?: Prisma.StringFilter<"Document"> | string
+  indexError?: Prisma.StringNullableFilter<"Document"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   conversationId?: Prisma.StringFilter<"Document"> | string
 }
 
@@ -515,6 +594,9 @@ export type DocumentCreateWithoutChunksInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   conversation: Prisma.ConversationCreateNestedOneWithoutDocumentsInput
 }
 
@@ -524,6 +606,9 @@ export type DocumentUncheckedCreateWithoutChunksInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
   conversationId: string
 }
 
@@ -549,6 +634,9 @@ export type DocumentUpdateWithoutChunksInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutDocumentsNestedInput
 }
 
@@ -558,6 +646,9 @@ export type DocumentUncheckedUpdateWithoutChunksInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -567,6 +658,9 @@ export type DocumentCreateManyConversationInput = {
   size: number
   extractedText: string
   createdAt?: Date | string
+  indexStatus?: string
+  indexError?: string | null
+  indexedAt?: Date | string | null
 }
 
 export type DocumentUpdateWithoutConversationInput = {
@@ -575,6 +669,9 @@ export type DocumentUpdateWithoutConversationInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   chunks?: Prisma.DocumentChunkUpdateManyWithoutDocumentNestedInput
 }
 
@@ -584,6 +681,9 @@ export type DocumentUncheckedUpdateWithoutConversationInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   chunks?: Prisma.DocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -593,6 +693,9 @@ export type DocumentUncheckedUpdateManyWithoutConversationInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  indexStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  indexError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -632,6 +735,9 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   size?: boolean
   extractedText?: boolean
   createdAt?: boolean
+  indexStatus?: boolean
+  indexError?: boolean
+  indexedAt?: boolean
   conversationId?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   chunks?: boolean | Prisma.Document$chunksArgs<ExtArgs>
@@ -644,6 +750,9 @@ export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   size?: boolean
   extractedText?: boolean
   createdAt?: boolean
+  indexStatus?: boolean
+  indexError?: boolean
+  indexedAt?: boolean
   conversationId?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
@@ -654,6 +763,9 @@ export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   size?: boolean
   extractedText?: boolean
   createdAt?: boolean
+  indexStatus?: boolean
+  indexError?: boolean
+  indexedAt?: boolean
   conversationId?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
@@ -664,10 +776,13 @@ export type DocumentSelectScalar = {
   size?: boolean
   extractedText?: boolean
   createdAt?: boolean
+  indexStatus?: boolean
+  indexError?: boolean
+  indexedAt?: boolean
   conversationId?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "size" | "extractedText" | "createdAt" | "conversationId", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "size" | "extractedText" | "createdAt" | "indexStatus" | "indexError" | "indexedAt" | "conversationId", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   chunks?: boolean | Prisma.Document$chunksArgs<ExtArgs>
@@ -692,6 +807,9 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     size: number
     extractedText: string
     createdAt: Date
+    indexStatus: string
+    indexError: string | null
+    indexedAt: Date | null
     conversationId: string
   }, ExtArgs["result"]["document"]>
   composites: {}
@@ -1123,6 +1241,9 @@ export interface DocumentFieldRefs {
   readonly size: Prisma.FieldRef<"Document", 'Int'>
   readonly extractedText: Prisma.FieldRef<"Document", 'String'>
   readonly createdAt: Prisma.FieldRef<"Document", 'DateTime'>
+  readonly indexStatus: Prisma.FieldRef<"Document", 'String'>
+  readonly indexError: Prisma.FieldRef<"Document", 'String'>
+  readonly indexedAt: Prisma.FieldRef<"Document", 'DateTime'>
   readonly conversationId: Prisma.FieldRef<"Document", 'String'>
 }
     

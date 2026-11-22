@@ -110,6 +110,9 @@ export const DocumentScalarFieldEnum = {
   size: 'size',
   extractedText: 'extractedText',
   createdAt: 'createdAt',
+  indexStatus: 'indexStatus',
+  indexError: 'indexError',
+  indexedAt: 'indexedAt',
   conversationId: 'conversationId'
 } as const
 
